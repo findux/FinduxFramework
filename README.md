@@ -1,2 +1,2 @@
 # FinduxFramework
-Rapid prototyping tool for c++
+Rapid prototyping tool for c++ and OpenGL learning journey...
