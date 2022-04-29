@@ -1,6 +1,7 @@
 #pragma once
-
+#include<GL/glew.h>
 #include <SDL.h>
+#include "Shader.h"
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -13,6 +14,7 @@ public:
 	int millisecsPreviousFrame = 0;
 	static int windowWidth;
 	static int windowHeight;
+	Shader* shader;
 public:
 	App();
 	~App();

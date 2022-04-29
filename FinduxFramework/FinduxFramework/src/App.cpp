@@ -16,17 +16,18 @@
 int App::windowWidth;
 int App::windowHeight;
 
-GLuint shaderProgram;
 GLuint VBO, VAO;
 
 App::App()
 {
 	isRunning = false;
 	isDebug = false;
+	
 }
 
 App::~App()
 {
+	delete shader;
 }
 
 void App::initialize()
@@ -91,58 +92,16 @@ void App::initialize()
 	// Define the viewport dimensions
 	glViewport(0, 0, windowWidth, windowHeight);
 
-
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	GLint success;
-	GLchar infoLog[512];
-
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "Error! Vertex shader compilation failed: " << infoLog << std::endl;
-	}
-
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "Error! Fragment shader compilation failed: " << infoLog << std::endl;
-	}
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-	if (!success)
-	{
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "Error! Shader program linking failed: " << infoLog << std::endl;
-	}
-
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
 	GLfloat vertices[] =
 	{
-		-0.5f , -0.5f , 0.0f,
-		0.5f , -0.5f , 0.0f,
-		0.0f , 0.5f, 0.0f
+		// position				//color
+		-0.5f , -0.5f , 0.0f,	1.0f, 0.0f,0.0f,
+		0.5f , -0.5f , 0.0f,	0.0f, 1.0f,0.0f,
+		0.0f , 0.5f, 0.0f,		0.0f, 0.0f,1.0f
 	};
 
-
+	//must be after GLEW init
+	shader = new Shader("core.vs", "core.fs");
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -152,8 +111,11 @@ void App::initialize()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -237,7 +199,7 @@ void App::render()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
-	glUseProgram(shaderProgram);
+	shader->use();
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES,0,3);
 	glBindVertexArray(0);

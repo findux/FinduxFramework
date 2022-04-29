@@ -435,6 +435,9 @@
     </None>
     <None Include="libs\lua\LICENCE" />
     <None Include="libs\sol\LICENCE" />
+    <None Include="glew32.dll" />
+    <None Include="core.fs" />
+    <None Include="core.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -462,6 +465,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libs\glm\detail\glm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1232,6 +1238,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libs\sol\sol.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
