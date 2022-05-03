@@ -26,6 +26,9 @@ public:
 	void processInput();
 	void update();
 	void render();
+
+	GLuint VBO, VAO, EBO;
+	GLuint texture;
 private:
 	SDL_Window* window;
 	SDL_GLContext mainContext;
