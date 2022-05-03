@@ -1,2 +1,4 @@
 ﻿  App.cpp
+D:\SourcePersonel\FinduxFramework\FinduxFramework\FinduxFramework\src\App.cpp(147,13): warning C4101: 'height': unreferenced local variable
+D:\SourcePersonel\FinduxFramework\FinduxFramework\FinduxFramework\src\App.cpp(147,6): warning C4101: 'width': unreferenced local variable
   FinduxFramework.vcxproj -> D:\SourcePersonel\FinduxFramework\FinduxFramework\x64\Debug\FinduxFramework.exe
