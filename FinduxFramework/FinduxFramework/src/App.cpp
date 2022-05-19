@@ -6,6 +6,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 #include <imgui/imgui_sdl.h>
 #include <imgui/imgui_impl_sdl.h>
@@ -28,7 +30,6 @@ App::App()
 
 App::~App()
 {
-	delete shader;
 }
 
 void App::initialize()
@@ -116,7 +117,9 @@ void App::initialize()
 	//GLuint VBO, VAO , EBO;
 
 	//must be after GLEW init
-	shader = new Shader("core.vs", "core.fs");
+	shaderWithLight.loadShaders("/shaders/lighting_dir_point_spot_VERT.vert",
+		"/shaders/lighting_dir_point_spot_GEOM.geom",
+		"/shaders/lighting_dir_point_spot_FRAG.frag");
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -254,8 +257,26 @@ void App::render()
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	glm::mat4 model, view, projection;
 
-	shader->use();
+	orbitCamera.rotate(orbitCamera.gYaw,orbitCamera.gPitch);
+	orbitCamera.setRadius(orbitCamera.gRadius);
+
+	// Create the View matrix
+	view = orbitCamera.getViewMatrix();
+
+	// Create the projection matrix
+	projection = glm::perspective(glm::radians(orbitCamera.getFOV()), (float)windowWidth / (float)windowHeight, 1.0f, 200.0f);
+
+	shaderWithLight.use();
+
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(0.5f, 0.5f, 0.0f));
+	transform = glm::rotate(transform, (GLfloat)SDL_GetTicks() , glm::vec3(0.0f, 0.0f, 1.0f));
+	
+	GLint transformLocation = glGetUniformLocation(shader->shaderProgram, "transform");
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+
 
 	glActiveTexture( GL_TEXTURE0 );
 	glBindTexture(GL_TEXTURE_2D, texture);
